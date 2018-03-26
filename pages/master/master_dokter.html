@@ -1,0 +1,515 @@
+    <style>
+	.btn {
+    margin-right: 5px;
+	}
+	.select2-container .select2-selection--single .select2-selection__rendered{
+	margin-top: -7px;
+	padding-left:0px;
+	}
+	</style>
+	
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+			  <div class="box">
+				<div class="box-header">
+				  <button class="btn btn-primary pull-right" onClick="show_modal_add()"><i class="fa fa-plus"></i> Tambah Data</button>
+				  <h3 class="box-title"><span class="title-table"></span></h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+				  <table id="example1" class="table table-bordered table-hover">
+					<thead>
+						<tr>
+						  <th style="width:5px">No</th>
+						  <th>Nama</th>
+						  <th>Rumah Sakit</th>
+						  <th>Alamat</th>
+						  <th>Telepon</th>
+						  <th>Option</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				  </table>
+				</div>
+			  </div>
+			</div>
+		</div>
+	
+		<div id="intteraction-modal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<form id="form">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title"><span id="keterangan_modal">Tambah Data</span>Dokter</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label>Nama <span style="color:#f00">*</span></label>
+								<input type="text" id="nama" name="nama" class="form-control input-sm">
+							</div>
+							<div class="form-group">
+								<label>Username <span style="color:#f00">*</span></label>
+								<input type="text" id="username" name="username" class="form-control input-sm">
+							</div>
+							<div class="form-group">
+								<label>Password <span style="color:#f00">*</span></label>
+								<input type="password" id="password" name="password" class="form-control input-sm">
+							</div>
+							<div class="form-group">
+								<label>Email <span style="color:#f00">*</span></label>
+								<input type="email" id="email" name="email" class="form-control input-sm">
+							</div>
+							<div class="form-group">
+								<label>Rumah Sakit <span style="color:#f00">*</span></label><br>
+								<select id="rumahsakit" name="rumahsakit" class="form-control input-sm" style="width:100%">
+								</select>
+							</div>
+							<div id="empty_field" class="alert alert-danger alert-dismissable fade in">
+								<strong>Sorry!</strong> Field tidak boleh kosong!.
+							</div>
+							<div id="success" class="alert alert-success fade in">
+								<strong>Success!</strong> Data anda berhasil di kirim !.
+							</div>
+							<div id="failed" class="alert alert-warning fade in">
+								<strong>Sorry!</strong> Something Wrong, please re-submit data.
+							</div>
+						</div>
+						<input type="hidden" name="id_dokter" id="id_dokter" value="">
+						<div class="modal-footer">
+							<div class="loading" class="pull-left">
+								<strong class="pull-left">Loading </strong>
+								<img class="pull-left" src="asset/images/circle-loading.gif" width="30px">
+							</div>
+							<button id="bsubmit" type="button" class="btn btn-success" onClick="login()">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="confirm" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<form id="delete_form">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Hapus Data</h4>
+						</div>
+						<div class="modal-body">
+							<h5>Apakah anda yakin akan menghapus data ini?</h5>
+							<input type="hidden" name="id_delete" id="id_delete" value="">
+							<div id="success_del" class="alert alert-success fade in">
+								<strong>Success!</strong> Data anda Berhasil di hapus !.
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="loading" class="pull-left">
+								<strong class="pull-left">Loading </strong>
+								<img class="pull-left" src="" width="30px">
+								<img class="pull-left" src="" width="30px">
+							</div>
+							<button id="bsubmitd" type="button" class="btn btn-danger" onClick="delete_data()">Delete</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</form>
+			  </div>
+		</div>
+		
+		<div id="approved" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Approve Dokter</h4>
+						</div>
+						<div class="modal-body">
+							<h5>Apakah anda yakin akan meng Approve data ini?</h5>
+							<input type="hidden" name="id_approve" id="id_approve" value="">
+							<div id="success_app" class="alert alert-success fade in">
+								<strong>Success!</strong> Data anda Berhasil di Approve !.
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="loading" class="pull-left">
+								<strong class="pull-left">Loading </strong>
+								<img class="pull-left" src="" width="30px">
+								<img class="pull-left" src="" width="30px">
+							</div>
+							<button id="bsubmita" type="button" class="btn btn-primary" onClick="approved()">Approve <i class="fa fa-check"></i></button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+			  </div>
+		</div>
+		
+		<div id="rejected" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Disable Dokter</h4>
+						</div>
+						<div class="modal-body">
+							<h5>Apakah anda yakin akan meng Disable data ini?</h5>
+							<input type="hidden" name="id_reject" id="id_reject" value="">
+							<div id="success_rej" class="alert alert-success fade in">
+								<strong>Success!</strong> Data anda Berhasil di Disable !.
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="loading" class="pull-left">
+								<strong class="pull-left">Loading </strong>
+								<img class="pull-left" src="" width="30px">
+								<img class="pull-left" src="" width="30px">
+							</div>
+							<button id="bsubmitr" type="button" class="btn btn-primary" onClick="rejected()">Disable <i class="fa fa-close"></i></button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+			  </div>
+		</div>
+	</section>
+
+<script>
+
+	var table="";
+
+	$(function () {
+		
+		$("#empty_field").hide();
+		$("#success").hide();
+		$("#failed").hide();
+		$("#success_del").hide();
+		$("#success_app").hide();
+		$("#success_rej").hide();
+		$(".loading").hide();
+		$('#gender').select2();
+
+		var url=base_url+'sispak_api/Dokter';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+
+		table = $('#example1').DataTable({
+			"destroy": true,
+			"responsive": true,
+			"processing": true,
+			"ajax": {
+			'url': url,
+			'type': 'GET',
+			'beforeSend': function (request) {
+				request.setRequestHeader("token", tokens);
+			}
+			},
+			"columns": [
+			{"data": "no"},
+			{"data": "nama"},
+			{"data": "nama_rs"},
+			{"data": "alamat"},
+			{"data": "telepon"},
+			{"data": "action"}
+			]
+		});
+
+		$('#intteraction-modal').on('hidden.bs.modal', function () {
+			$('#form').find("input[type=text],input[type=password],input[type=email], textarea,select").val("");
+			table.ajax.reload();
+			$("#bsubmit").prop('disabled', false);
+			$("#bsubmitd").prop('disabled', false);
+		});
+		
+		$(".datepicker").datepicker({
+			autoclose:true
+		});
+		
+	});
+
+	function show_modal_add(){
+		$("#keterangan_modal").html("Tambah Data");
+		$("#bsubmit").attr("onclick","add_data()");
+		$("#intteraction-modal").modal("show");
+		var url=base_url+'sispak_api/Rumahsakit/';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+
+		var settings = {
+			"async": false,
+			"crossDomain": true,
+			"url": url,
+			"method": "GET",
+			"headers": {
+				"token": tokens
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			if(response){
+				var row='<option value="">-- Pilih Rumah Sakit --</option>';
+				var x = 0;
+				//console.log(response.data[0].id_rumahsakit);
+				$(response.data).each(function(result){
+					row = row+'<option value="'+response.data[x].id_rumahsakit+'">'+response.data[x].nama+'</option>';
+				x++;
+				});
+				
+				$("#rumahsakit").html(row);
+				$('#rumahsakit').select2();				
+			}
+			
+		});
+	}
+  
+	function add_data(){
+		
+		$("#bsubmit").prop('disabled', true);
+		
+		var url=base_url+'sispak_api/Dokter/insert';
+		var tokens=JSON.parse(localStorage.getItem('token'));				
+		var data_api = {nama:$("#nama").val(),username:$("#username").val(),email:$("#email").val(),password:$("#password").val(),id_rumahsakit:$("#rumahsakit").val()};
+
+		var settings = {
+			"async": false,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+
+		if($("#nama").val()== "" || $("#username").val()== "" || $("#password").val()== "" || $("#email").val()== "" || $("#rumahsakit").val()== ""){
+			$("#empty_field").show(1000).delay(1000).hide(1000);
+			$("#bsubmit").prop('disabled', false);
+		}
+		else{
+			$.ajax(settings).done(function (response) {
+				if(response){
+					setTimeout(function(){
+						$("#intteraction-modal").modal("hide");
+					}, 3000); 
+					//$('#form').find("input[type=text],input[type=password],input[type=email], textarea,select").val("");
+					$("#rumahsakit").select2("val", "");
+					table.ajax.reload();
+					$("#success").show(1000).delay(1000).hide(1000);
+				}
+			});
+		}
+	}
+ 
+	function show_modal_edit(id){
+		$("#keterangan_modal").html("Ubah Data");
+		$("#bsubmit").attr("onclick","edit_data()");
+		$("#intteraction-modal").modal("show");
+		$("#id_rumahsakit").val(id);
+
+		var url=base_url+'sispak_api/Dokter/'+id;
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var id_rumahsakit="";
+		
+		var settings = {
+			"async": false,
+			"crossDomain": true,
+			"url": url,
+			"method": "GET",
+			"headers": {
+				"token": tokens
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			if(response){
+				//console.log(response);
+				$("#nama").val(response.data[0].nama);
+				$("#username").val(response.data[0].username);
+				$("#password").val(response.data[0].password);
+				$("#email").val(response.data[0].email);
+				$("#id_dokter").val(response.data[0].id_dokter);
+				id_rumahsakit=response.data[0].id_rumahsakit;
+				//$("#dokter").html('<option value="'+response.data[0].id_dokter+'">'+response.data[0].nama+'</option>');			
+			}
+		});
+		
+		var url2=base_url+'sispak_api/Rumahsakit/';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		
+		var settings2 = {
+			"async": false,
+			"crossDomain": true,
+			"url": url2,
+			"method": "GET",
+			"headers": {
+				"token": tokens
+			}
+		}
+		$.ajax(settings2).done(function (response) {
+			if(response){
+				var row='<option value="">-- Pilih Rumah Sakit --</option>';
+				var x = 0;
+				//console.log(response.data[0].id_dokter);
+				$(response.data).each(function(result){
+					if(response.data[x].id_rumahsakit==id_rumahsakit){
+						row = row+'<option value="'+response.data[x].id_rumahsakit+'" selected>'+response.data[x].nama+'</option>';
+					}
+					else{
+						row = row+'<option value="'+response.data[x].id_rumahsakit+'">'+response.data[x].nama+'</option>';
+					}
+				x++;
+				});
+				$("#rumahsakit").html(row);
+				$('#rumahsakit').select2();				
+			}
+		});
+		
+	}
+  
+	function edit_data(){
+	
+		$("#bsubmit").prop('disabled', true);
+	
+		var url=base_url+'sispak_api/Dokter/update';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {nama:$("#nama").val(),username:$("#username").val(),email:$("#email").val(),password:$("#password").val(),id_rumahsakit:$("#rumahsakit").val(),id_dokter:$("#id_dokter").val()};
+
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+
+		if($("#nama").val()== "" || $("#username").val()== "" || $("#password").val()== "" || $("#email").val()== "" ||  $("#rumahsakit").val()== ""){
+			$("#bsubmit").prop('disabled', false);
+			$("#empty_field").show(1000).delay(1000).hide(1000);
+		}
+		else{
+			$.ajax(settings).done(function (response) {
+				if(response){
+					setTimeout(function(){
+						$("#intteraction-modal").modal("hide");
+					}, 3000); 
+					//$('#form').find("input[type=text], textarea,select").val("");
+					table.ajax.reload();
+					$("#success").show(1000).delay(1000).hide(1000);
+				}
+			});
+		}
+	}    
+  
+	function show_modal_delete(id){
+		$("#confirm").modal("show");
+		$("#id_delete").val(id);
+		$("#bsubmitd").prop('disabled', false);
+	}
+  
+	function delete_data(){
+	
+		$("#bsubmitd").prop('disabled', true);
+	
+		var url=base_url+'sispak_api/Dokter/delete';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {id_dokter:$("#id_delete").val()};
+			
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+
+		$.ajax(settings).done(function (response) {
+			if(response){
+				setTimeout(function(){
+					$("#confirm").modal("hide");
+					$("#intteraction-modal").modal("hide");
+				}, 3000); 
+				table.ajax.reload();
+				$("#success_del").show(1000).delay(1000).hide(1000);
+			}
+		});
+	}
+	
+	function show_modal_approve(id){
+	
+		$("#approved").modal("show");
+		$("#id_approve").val(id);
+	}
+	
+	function approved(){
+		var url=base_url+'sispak_api/Dokter/approve';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {id_dokter:$("#id_approve").val(),isapprove:"y"};
+
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+		
+		$.ajax(settings).done(function (response) {
+			if(response){
+				console.log(response);
+				setTimeout(function(){
+					$("#intteraction-modal").modal("hide");
+				}, 3000); 
+				//$('#form').find("input[type=text], textarea,select").val("");
+				table.ajax.reload();
+				$("#success_app").show(1000).delay(1000).hide(1000);
+			}
+		});
+		
+	}
+	
+	function show_modal_reject(id){
+	
+		$("#rejected").modal("show");
+		$("#id_reject").val(id);
+	}
+	
+	function rejected(){
+		var url=base_url+'sispak_api/Dokter/approve';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {id_dokter:$("#id_reject").val(),isapprove:"n"};
+
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+		
+		$.ajax(settings).done(function (response) {
+			if(response){
+				console.log(response);
+				setTimeout(function(){
+					$("#intteraction-modal").modal("hide");
+				}, 3000); 
+				//$('#form').find("input[type=text], textarea,select").val("");
+				table.ajax.reload();
+				$("#success_rej").show(1000).delay(1000).hide(1000);
+			}
+		});
+		
+	}
+	
+</script>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html >
+<head id="header">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>SSIS-SPIN SURGERY INJURY SEVERITY | Log in</title>
+	<!-- Tell the browser to be responsive to screen width -->
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	
+	<script src="plugins/jQuery/jquery-3.1.1.min.js"></script>
+	<script> 
+	$(function(){
+		$("#header").load("header.html"); 
+	});
+	</script> 
+</head>
+	
+<body>
+	<div class="login-box">
+		<div class="login-logo">
+			<a href="../../index2.html"><b></a>
+		</div>
+
+		<div class="login-box-body">
+			<img src="images/logo.png" class="" alt="User Image">
+			<br>
+			<br>
+			<p class="login-box-msg text-red">SSIS-SPIN SURGERY INJURY SEVERITY</p>
+			<p class="login-box-msg text-green">Silahkan Login untuk memulai sesi Anda</p>
+			
+			<form id="form_login">
+				<div class="form-group has-feedback">
+					<input type="text" id="username" name="username" class="form-control" placeholder="Username">
+					<span class="glyphicon glyphicon-user form-control-feedback"></span>
+				</div>
+				<div class="form-group has-feedback">
+					<input type="password" id="password" name="password" class="form-control" placeholder="Password">
+					<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+				</div>
+				<div class="row">
+					<div class="col-xs-4 " style="width:100%;" >
+						<button onClick="login()"   id="btn-login" type="button" class="btn btn-primary btn-block btn-flat">Sign In</button>
+					</div>
+					
+					<div class="col-xs-12">
+						<div  id="empty_field" class="alert alert-danger alert-dismissable">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Sorry!</strong> Field tidak boleh kosong!.
+						</div>
+						<div id="success" class="alert alert-success fade in">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Success!</strong> Data anda berhasil Login !.
+						</div>
+						<div id="failed" class="alert alert-danger fade in">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<strong>Sorry!</strong> Username atau Password salah.
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		</div>
+	<div id="foot"></div>
+</body>
+
+<script> 
+	$(function(){
+		$("#foot").load("footer.html"); 
+		$("#empty_field").hide();
+		$("#success").hide();
+		$("#failed").hide();
+
+		$("#username").keyup(function(event) {
+			if (event.keyCode === 13) {
+				$("#btn-login").click();
+			}
+		});		
+		$("#password").keyup(function(event) {
+			if (event.keyCode === 13) {
+				$("#btn-login").click();
+			}
+		});		
+	});
+
+	function login(){		 
+		if(!$("#username").val() || !$("#password").val()){
+			$("#empty_field").show(1000).delay(2500).hide(1000);
+		}
+		else{
+			var url="http://dev.infinite-creative.com/sispak_api/Auth/token";
+			var data_api = {username:$("#username").val(),password:$("#password").val()};
+			
+			$.post( url,JSON.stringify(data_api), function(result) {
+				if(result.token){
+					$("#success").show(1000).delay(1000).hide(1000);
+					localStorage.setItem('token', JSON.stringify(result.token));
+					var tokens=JSON.parse(localStorage.getItem('token'));
+					setTimeout(function(){ window.location.href='pages/main.html'}, 3000); 
+				}
+				else if(!result.token){
+					$("#failed").show(1000).delay(2500).hide(1000);
+					return;
+				}			
+			},'json');
+		}
+	}
+
+</script> 
+
+<style>
+body {
+	background-image: url("images/log_bg.png");
+}
+
+.login-box-body{
+	background-color: #ffffff;
+	width : 509px;
+	height : 478px;
+	text-align : center;
+	border-radius: 26px;
+    border-bottom: 5px solid #f0a345;
+	
+-webkit-box-shadow: 0px 13px 54px -6px rgba(184,184,184,1);
+-moz-box-shadow: 0px 13px 54px -6px rgba(184,184,184,1);
+box-shadow: 0px 13px 54px -6px rgba(184,184,184,1);
+}
+</style>
+</html>

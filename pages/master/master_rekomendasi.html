@@ -1,0 +1,369 @@
+    <style>
+	.btn {
+    margin-right: 5px;
+	}
+	
+	.select2-container .select2-selection--single .select2-selection__rendered{
+	margin-top: -7px;
+	padding-left:0px;
+	}
+	</style>
+	
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+			  <div class="box">
+				<div class="box-header">
+				  <button class="btn btn-primary pull-right" onClick="show_modal_add()"><i class="fa fa-plus"></i> Tambah Data</button>
+				  <h3 class="box-title"><span class="title-table"></span></h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+				  <table id="example1" class="table table-bordered table-hover">
+					<thead>
+						<tr>
+						  <th style="width:5px">No</th>
+						  <th>Rekomendasi</th>
+						  <th>Keterangan</th>
+						  <th>Min Nilai</th>
+						  <th>Max Nilai</th>
+						  <th>Derajat Cidera</th>
+						  <th>Option</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				  </table>
+				</div>
+			  </div>
+			</div>
+		</div>
+	
+		<div id="intteraction-modal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<form id="form">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title"><span id="keterangan_modal">Tambah Data</span> Rekomendasi</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label>Derajat Cidera<span style="color:#f00">*</span></label><br>
+								<!--<input type="text" id="id_derajat_cidera" name="id_derajat_cidera" class="form-control input-sm">!-->
+								<select id="id_derajat_cidera" name="id_derajat_cidera" class="form-control input-sm" style="width:100%">
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Rekomendasi<span style="color:#f00">*</span></label><br>
+								<textarea class="form-control" rows="5" id="rekomendasi" name="rekomendasi"></textarea>			
+								<!--<input type="text" id="rekomendasi" name="rekomendasi" class="form-control input-sm">!-->
+							</div>
+							
+							<div id="empty_field" class="alert alert-danger alert-dismissable fade in">
+								<strong>Sorry!</strong> Field tidak boleh kosong!.
+							</div>
+							<div id="success" class="alert alert-success fade in">
+								<strong>Success!</strong> Data anda berhasil di kirim !.
+							</div>
+							<div id="failed" class="alert alert-warning fade in">
+								<strong>Sorry!</strong> Something Wrong, please re-submit data.
+							</div>
+						</div>
+						<input type="hidden" name="id_rekomendasi" id="id_rekomendasi" value="">
+						<div class="modal-footer">
+							<div class="loading" class="pull-left">
+								<strong class="pull-left">Loading </strong>
+								<img class="pull-left" src="asset/images/circle-loading.gif" width="30px">
+							</div>
+							<button id="bsubmit" type="button" class="btn btn-success" onClick="login()">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="confirm" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<form id="delete_form">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Hapus Data</h4>
+						</div>
+						<div class="modal-body">
+							<h5>Apakah anda yakin akan menghapus data ini?</h5>
+							<input type="hidden" name="id_delete" id="id_delete" value="">
+							<div id="success_del" class="alert alert-success fade in">
+								<strong>Success!</strong> Data anda Berhasil di hapus !.
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="loading" class="pull-left">
+								<strong class="pull-left">Loading </strong>
+								<img class="pull-left" src="" width="30px">
+								<img class="pull-left" src="" width="30px">
+							</div>
+							<button id="bsubmitd" type="button" class="btn btn-danger" onClick="delete_data()">Delete</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</form>
+			  </div>
+		</div>
+	</section>
+
+<script>
+
+	var table="";
+
+	$(function () {
+		
+		$("#empty_field").hide();
+		$("#success").hide();
+		$("#failed").hide();
+		$("#success_del").hide();
+		$(".loading").hide();
+
+		var url=base_url+'sispak_api/Rekomendasi/';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+
+		table = $('#example1').DataTable({
+			"destroy": true,
+			"responsive": true,
+			"processing": true,
+			"ajax": {
+			'url': url,
+			'type': 'GET',
+			'beforeSend': function (request) {
+				request.setRequestHeader("token", tokens);
+				
+			}
+			},
+			"columns": [
+			{"data": "no"},
+			{"data": "rekomendasi"},
+			{"data": "keterangan"},
+			{"data": "min_nilai"},
+			{"data": "max_nilai"},
+			{"data": "nama"},
+			{"data": "action"}
+			]
+		});
+
+		$('#intteraction-modal').on('hidden.bs.modal', function () {
+			$('#form').find("input[type=text], textarea,select").val("");
+			$("#bsubmit").prop('disabled', false);
+			$("#bsubmitd").prop('disabled', false);
+			table.ajax.reload();
+		})
+		
+	});
+	
+	function show_modal_add(){
+		$("#keterangan_modal").html("Tambah Data");
+		$("#bsubmit").attr("onclick","add_data()");
+		$("#intteraction-modal").modal("show");
+		
+		var url=base_url+'sispak_api/Derajatcidera/';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "GET",
+			"headers": {
+				"token": tokens
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			if(response){
+				var row='<option value="">-- Pilih Derajat Cidera --</option>';
+				var x = 0;
+				//console.log(response.data[0].id_derajat_cidera);
+				$(response.data).each(function(result){
+					row = row+'<option value="'+response.data[x].id_derajat_cidera+'">'+response.data[x].nama+'</option>';
+				x++;
+				});
+				$("#id_derajat_cidera").html(row);
+				$('#id_derajat_cidera').select2();				
+			}
+		});
+	}
+  
+	function add_data(){
+	
+		$("#bsubmit").prop('disabled', true);
+	
+		var url=base_url+'sispak_api/Rekomendasi/insert';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {id_derajat_cidera:$("#id_derajat_cidera").val(),rekomendasi:$("#rekomendasi").val()};
+
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+
+		if($("#id_derajat_cidera").val()== "" || $("#rekomendasi").val()== ""){
+			$("#empty_field").show(1000).delay(1000).hide(1000);
+			$("#bsubmit").prop('disabled', false);
+		}
+		else{
+			$.ajax(settings).done(function (response) {
+				if(response){
+					setTimeout(function(){
+						$("#intteraction-modal").modal("hide");
+					}, 3000); 
+					$('#form').find("input[type=text], textarea,select").val("");
+					table.ajax.reload();
+					$("#success").show(1000).delay(1000).hide(1000);
+				}
+			});
+		}
+	}
+ 
+	function show_modal_edit(id){
+		$("#keterangan_modal").html("Ubah Data");
+		$("#bsubmit").attr("onclick","edit_data()");
+		$("#intteraction-modal").modal("show");
+
+		var url=base_url+'sispak_api/Rekomendasi/'+id;
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var id_derajat_cidera="";
+
+		var settings = {
+			"async": false,
+			"crossDomain": true,
+			"url": url,
+			"method": "GET",
+			"headers": {
+				"token": tokens
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			if(response){
+				//console.log(response);
+				$("#id").val(response.data[0].id);
+				$("#id_rekomendasi").val(response.data[0].id_rekomendasi);
+				$("#rekomendasi").val(response.data[0].rekomendasi);
+				id_derajat_cidera=response.data[0].id_derajat_cidera;
+				
+			}
+		});
+		
+		var url=base_url+'sispak_api/Derajatcidera/';
+		var settings2 = {
+			"async": false,
+			"crossDomain": true,
+			"url": url,
+			"method": "GET",
+			"headers": {
+				"token": tokens
+			}
+		}
+		$.ajax(settings2).done(function (response) {
+			if(response){
+				var row='<option value="">-- Pilih Derajat Cidera --</option>';
+				var x = 0;
+				$(response.data).each(function(result){
+					if(response.data[x].id_derajat_cidera==id_derajat_cidera){
+						row = row+'<option value="'+response.data[x].id_derajat_cidera+'" selected>'+response.data[x].nama+'</option>';
+					}
+					else{
+						row = row+'<option value="'+response.data[x].id_derajat_cidera+'">'+response.data[x].nama+'</option>';
+					}
+				x++;
+				});
+				$("#id_derajat_cidera").html(row);
+				$('#id_derajat_cidera').select2();				
+			}
+		});
+	}
+  
+	function edit_data(){
+	
+		$("#bsubmit").prop('disabled', true);
+	
+		var url=base_url+'sispak_api/Rekomendasi/update';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {id_rekomendasi:$("#id_rekomendasi").val(),rekomendasi:$("#rekomendasi").val(),id_derajat_cidera:$("#id_derajat_cidera").val()};
+
+		//console.log(data_api);
+//		return;
+		
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+
+		if($("#id_rekomendasi").val()== "" || $("#rekomendasi").val()== "" ||$("#id_derajat_cidera").val()== ""){
+			$("#empty_field").show(1000).delay(1000).hide(1000);
+			$("#bsubmit").prop('disabled', false);
+		}
+		else{
+			$.ajax(settings).done(function (response) {
+				if(response){
+					setTimeout(function(){
+						$("#intteraction-modal").modal("hide");
+					}, 3000); 
+					$('#form').find("input[type=text], textarea,select").val("");
+					table.ajax.reload();
+					$("#success").show(1000).delay(1000).hide(1000);
+				}
+			});
+		}
+	}  
+  
+	function show_modal_delete(id){
+		$("#confirm").modal("show");
+		$("#id_rekomendasi").val(id);
+		$("#bsubmitd").prop('disabled', false);
+	}
+  
+	function delete_data(){
+	
+		$("#bsubmitd").prop('disabled', true);
+	
+		var url=base_url+'sispak_api/Rekomendasi/delete';
+		var tokens=JSON.parse(localStorage.getItem('token'));
+		var data_api = {id_rekomendasi:$("#id_rekomendasi").val()};
+			
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": url,
+			"method": "POST",
+			"data":JSON.stringify(data_api),
+			"headers": {
+				"token": tokens
+			}
+		}
+
+		$.ajax(settings).done(function (response) {
+			if(response){
+				setTimeout(function(){
+					$("#confirm").modal("hide");
+				}, 3000); 
+				table.ajax.reload();
+				$("#success_del").show(1000).delay(1000).hide(1000);
+			}
+		});
+	}
+	
+	
+</script>
